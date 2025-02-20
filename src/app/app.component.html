@@ -1,0 +1,287 @@
+<main
+  class="u-flex u-flex-vertical u-padding-20 u-cross-center u-gap-32 checker-background"
+  [style.marginBottom.px]="detailHeight"
+>
+  <div class="connection-visual">
+    <div class="outer-card">
+      <div class="inner-card">
+        <img src="/angular.svg" width="72" height="72" alt="React logo" />
+      </div>
+    </div>
+    <div
+      class="connection-line"
+      [style.opacity]="status === 'success' ? 1 : 0"
+      style="transition: opacity 2.5s"
+    >
+      <div class="line-left"></div>
+      <div
+        class="u-flex u-main-center u-border-radius-circle tick-container icon-check"
+        style="color: #fd366e"
+      ></div>
+      <div class="line-right"></div>
+    </div>
+    <div class="outer-card">
+      <div class="inner-card">
+        <img src="/appwrite.svg" width="72" height="72" alt="Appwrite logo" />
+      </div>
+    </div>
+  </div>
+
+  <section
+    class="u-flex u-flex-vertical u-main-center u-cross-center u-padding-16"
+    style="backdrop-filter: blur(1px)"
+  >
+    <div *ngIf="status === 'loading'" class="u-flex u-cross-center u-gap-16">
+      <div class="loader is-small"></div>
+      <h1 class="heading-level-7">Waiting for connection...</h1>
+    </div>
+    <h1 *ngIf="status === 'success'" class="heading-level-5">
+      Congratulations!
+    </h1>
+    <h1 *ngIf="status === 'idle' || status === 'error'" class="heading-level-5">
+      Check connection
+    </h1>
+
+    <p class="body-text-2 u-text-center">
+      <span *ngIf="status === 'success'"
+        >You connected your app successfully.</span
+      >
+      <span *ngIf="status === 'error' || status === 'idle'"
+        >Send a ping to verify the connection</span
+      >
+    </p>
+
+    <button
+      (click)="sendPing()"
+      class="button u-margin-block-start-32"
+      [style.visibility]="status === 'loading' ? 'hidden' : 'visible'"
+    >
+      <span>Send a ping</span>
+    </button>
+  </section>
+
+  <nav class="u-grid">
+    <ul class="u-flex u-flex-wrap u-main-center u-gap-32">
+      <li
+        class="card u-max-width-300 u-flex-vertical u-gap-8"
+        style="--p-card-padding: 1em"
+      >
+        <h2 class="heading-level-7">Edit your app</h2>
+        <p class="body-text-2">
+          Edit <code class="inline-code">app.component.ts</code> to get started
+          with building your app
+        </p>
+      </li>
+      <li class="card u-max-width-300" style="--p-card-padding: 1em">
+        <a
+          href="https://cloud.appwrite.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="u-flex-vertical u-gap-8"
+        >
+          <div class="u-flex u-main-space-between u-cross-center">
+            <h2 class="heading-level-7">Head to Appwrite Cloud</h2>
+            <span
+              class="icon-arrow-right"
+              style="color: hsl(var(--color-neutral-15))"
+            ></span>
+          </div>
+          <p class="body-text-2">
+            Start managing your project from the Appwrite console
+          </p>
+        </a>
+      </li>
+      <li class="card u-max-width-300" style="--p-card-padding: 1em">
+        <a
+          href="https://appwrite.io/docs"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="u-flex-vertical u-gap-8"
+        >
+          <div class="u-flex u-main-space-between u-cross-center">
+            <h2 class="heading-level-7">Explore docs</h2>
+            <span
+              class="icon-arrow-right"
+              style="color: hsl(var(--color-neutral-15))"
+            ></span>
+          </div>
+          <p class="body-text-2">
+            Discover the full power of Appwrite by diving into our documentation
+          </p>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <aside
+    class="collapsible u-width-full-line u-position-fixed"
+    style="border: 1px solid hsl(var(--color-neutral-10)); bottom: 0"
+  >
+    <div class="collapsible-item">
+      <details
+        #detailsRef
+        class="collapsible-wrapper u-padding-0"
+        style="background-color: hsl(var(--color-neutral-0))"
+        [attr.open]="showLogs"
+      >
+        <summary class="collapsible-button u-padding-16">
+          <span class="text">Logs</span>
+          <span *ngIf="logs.length > 0" class="collapsible-button-optional">
+            <span class="inline-tag">
+              <span class="text">{{ logs.length }}</span>
+            </span>
+          </span>
+          <div class="icon">
+            <span class="icon-cheveron-down" aria-hidden="true"></span>
+          </div>
+        </summary>
+        <div
+          class="collapsible-content u-flex u-flex-vertical-mobile u-cross-stretch u-padding-0"
+        >
+          <div
+            class="table is-table-row-medium-size u-stretch"
+            style="--p-border-radius: 0; inline-size: unset"
+          >
+            <div
+              class="table-thead"
+              style="background-color: hsl(var(--color-neutral-5))"
+            >
+              <div class="table-row">
+                <div class="table-thead-col">
+                  <span class="u-color-text-offline">Project</span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="grid-box u-padding-16"
+              style="
+                --grid-gap: 2rem;
+                --grid-item-size-small-screens: 10rem;
+                --grid-item-size: 10rem;
+                background-color: hsl(var(--color-neutral-0));
+              "
+            >
+              <div class="u-grid u-grid-vertical u-gap-8">
+                <p class="u-color-text-offline">Endpoint</p>
+                <p class="body-text-2">{{ endpoint }}</p>
+              </div>
+              <div class="u-grid u-grid-vertical u-gap-8">
+                <p class="u-color-text-offline">Project ID</p>
+                <p class="body-text-2">{{ projectId }}</p>
+              </div>
+              <div class="u-grid u-grid-vertical u-gap-8">
+                <p class="u-color-text-offline">Project name</p>
+                <p class="body-text-2">{{ projectName }}</p>
+              </div>
+            </div>
+          </div>
+
+          <table
+            class="table is-table-row-small-size"
+            style="--p-border-radius: 0; flex: 2"
+          >
+            <thead
+              class="table-thead"
+              style="background-color: hsl(var(--color-neutral-5))"
+            >
+              <tr
+                class="table-row u-grid"
+                style="
+                  grid-template-columns: 3fr 2fr 2fr 2fr 5fr;
+                  min-block-size: unset;
+                "
+              >
+                <ng-container *ngIf="logs.length > 0; else emptyLogs">
+                  <th class="table-thead-col">
+                    <span class="u-color-text-offline">Date</span>
+                  </th>
+                  <th class="table-thead-col">
+                    <span class="u-color-text-offline">Status</span>
+                  </th>
+                  <th class="table-thead-col">
+                    <span class="u-color-text-offline">Method</span>
+                  </th>
+                  <th class="table-thead-col">
+                    <span class="u-color-text-offline">Path</span>
+                  </th>
+                  <th class="table-thead-col">
+                    <span class="u-color-text-offline">Response</span>
+                  </th>
+                </ng-container>
+                <ng-template #emptyLogs>
+                  <th class="table-thead-col" colspan="5">
+                    <span class="u-color-text-offline">Logs</span>
+                  </th>
+                </ng-template>
+              </tr>
+            </thead>
+
+            <tbody
+              class="table-tbody u-flex u-flex-vertical u-font-code u-overflow-y-auto"
+              style="max-height: 16em"
+            >
+              <ng-container *ngIf="logs.length > 0; else noLogs">
+                <tr
+                  *ngFor="let log of logs"
+                  class="table-row u-grid u-height-auto"
+                  style="
+                    grid-template-columns: 3fr 2fr 2fr 2fr 5fr;
+                    min-block-size: unset;
+                  "
+                >
+                  <td class="table-col u-flex u-cross-center" data-title="Date">
+                    <time class="text">
+                      {{ log.date | date: "MMM d, h:mm a" }}
+                    </time>
+                  </td>
+                  <td
+                    class="table-col u-flex u-cross-center"
+                    data-title="Status"
+                  >
+                    <span
+                      [class]="
+                        'tag ' +
+                        (log.status >= 400 ? 'is-warning' : 'is-success')
+                      "
+                    >
+                      {{ log.status }}
+                    </span>
+                  </td>
+                  <td
+                    class="table-col u-flex u-cross-center"
+                    data-title="Method"
+                  >
+                    <span class="text">{{ log.method }}</span>
+                  </td>
+                  <td class="table-col u-flex u-cross-center" data-title="Path">
+                    <span class="text">{{ log.path }}</span>
+                  </td>
+                  <td
+                    class="table-col u-flex u-cross-center"
+                    data-title="Response"
+                  >
+                    <code class="inline-code u-un-break-text u-overflow-x-auto">
+                      {{ log.response }}
+                    </code>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-template #noLogs>
+                <tr
+                  class="table-row u-height-auto"
+                  style="min-block-size: unset"
+                >
+                  <td colspan="5">
+                    <p class="u-color-text-offline u-padding-16">
+                      There are no logs to show
+                    </p>
+                  </td>
+                </tr>
+              </ng-template>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </aside>
+</main>
